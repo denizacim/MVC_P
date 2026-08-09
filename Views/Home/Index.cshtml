@@ -1,0 +1,55 @@
+﻿@using MVC_P.Data
+@using Microsoft.EntityFrameworkCore
+@inject ApplicationDbContext Db
+@model List<MVC_P.Models.Event>
+@{
+    ViewData["Title"] = "Ana Sayfa";
+    var upcoming = Db.Events.Include(e => e.Club)
+        .Where(e => e.BaslangicTarihi >= DateTime.UtcNow)
+        .OrderBy(e => e.BaslangicTarihi)
+        .Take(10)
+        .ToList();
+    var clubs = Db.Clubs.Where(c => c.AktifMi).OrderBy(c => c.Ad).ToList();
+    var counts = (IDictionary<int,int>) (ViewBag.RegCounts ?? new Dictionary<int,int>());
+}
+<div class="hero card-like section mb-4">
+    <h2>Yaklaşan Etkinlikler</h2>
+    <p class="small-title">Planlanan etkinliklere buradan kolayca katılabilirsiniz.</p>
+</div>
+<div class="row g-3">
+@foreach (var e in Model)
+{
+    var regCount = counts.ContainsKey(e.Id) ? counts[e.Id] : 0;
+    var remaining = Math.Max(0, e.Kontenjan - regCount);
+    <div class="col-md-6">
+        <div class="section card-like">
+            <h5>@e.Baslik</h5>
+            <div class="text-muted">@e.BaslangicTarihi:g - @e.Konum</div>
+            <div class="small text-muted">Kayıtlı: @regCount / Kalan: @remaining</div>
+            <div class="mt-2 d-flex gap-2">
+                <a class="btn btn-outline-primary btn-sm" asp-controller="Events" asp-action="Details" asp-route-id="@e.Id">Detay</a>
+                <button class="btn btn-primary btn-sm" onclick="register(@e.Id)">Kayıt Ol</button>
+            </div>
+        </div>
+    </div>
+}
+</div>
+<h2>Kulüpler</h2>
+<ul class="list-group">
+@foreach (var c in clubs)
+{
+    <li class="list-group-item">@c.Ad</li>
+}
+</ul>
+@section Scripts{
+<script>
+ function register(id){
+   fetch('/Events/Register/' + id, { method: 'POST' })
+     .then(r=>r.json())
+     .then(d=>{
+        alert(d.message);
+        if(d.ok){ location.reload(); }
+     });
+ }
+</script>
+}

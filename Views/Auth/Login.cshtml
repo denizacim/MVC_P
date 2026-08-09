@@ -1,0 +1,21 @@
+@{
+    ViewData["Title"] = "Giriþ Yap";
+}
+<h2>Giriþ Yap</h2>
+<form method="post">
+    <div class="mb-3">
+        <label>Email</label>
+        <input class="form-control" name="email" />
+    </div>
+    <div class="mb-3">
+        <label>Þifre</label>
+        <input class="form-control" name="password" type="password" />
+    </div>
+    <button class="btn btn-primary" type="submit">Giriþ</button>
+</form>
+<div class="text-danger">
+    @foreach (var err in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+    {
+        <div>@err.ErrorMessage</div>
+    }
+</div>

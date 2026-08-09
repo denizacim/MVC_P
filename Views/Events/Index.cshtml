@@ -1,0 +1,52 @@
+@model List<MVC_P.Models.Event>
+@{
+    ViewData["Title"] = "Etkinlikler";
+    var clubs = (IEnumerable<MVC_P.Models.Club>)ViewBag.Clubs;
+}
+<h2>Etkinlikler</h2>
+<div class="d-flex mb-3">
+    <form id="filterForm" class="row g-2 flex-grow-1">
+        <div class="col-auto">
+            <select class="form-select" name="clubId" id="clubId">
+                <option value="">Kulüp</option>
+                @foreach (var c in clubs)
+                {
+                    <option value="@c.Id">@c.Ad</option>
+                }
+            </select>
+        </div>
+        <div class="col-auto"><input class="form-control" type="date" name="start" id="start" /></div>
+        <div class="col-auto"><input class="form-control" type="date" name="end" id="end" /></div>
+        <div class="col-auto">
+            <select class="form-select" name="durum" id="durum">
+                <option value="">Durum</option>
+                <option>Planlandi</option>
+                <option>Tamamlandi</option>
+                <option>Iptal</option>
+            </select>
+        </div>
+    </form>
+    @if (User?.Identity?.IsAuthenticated == true && (User.IsInRole("Admin") || User.IsInRole("KulupYoneticisi")))
+    {
+        <div class="ms-auto">
+            <a class="btn btn-primary" asp-action="Create">Yeni Etkinlik</a>
+        </div>
+    }
+</div>
+<div id="eventList">
+    @await Html.PartialAsync("_EventList", Model)
+</div>
+@section Scripts{
+<script>
+function loadList(){
+    const params = new URLSearchParams(new FormData(document.getElementById('filterForm')));
+    fetch('/Events/_EventList?' + params)
+      .then(r=>r.text())
+      .then(html=>{ document.getElementById('eventList').innerHTML = html; });
+}
+['clubId','start','end','durum'].forEach(id=>{
+   const el = document.getElementById(id);
+   if(el) el.addEventListener('change', loadList);
+});
+</script>
+}

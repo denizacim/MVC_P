@@ -1,0 +1,34 @@
+@model List<MVC_P.Models.EventRegistration>
+@{
+    ViewData["Title"] = "Kayýt Yönetimi";
+    var events = (IEnumerable<MVC_P.Models.Event>)ViewBag.Events;
+}
+<h2>Kayýt Yönetimi</h2>
+<div class="row g-2 mb-3">
+    <div class="col-auto">
+        <select class="form-select" id="eventId">
+            <option value="">Etkinlik</option>
+            @foreach (var e in events)
+            {
+                <option value="@e.Id">@e.Baslik</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-secondary" id="btnLoad">Katýlýmcýlarý Göster</button>
+    </div>
+</div>
+<div id="participants">
+    @await Html.PartialAsync("_Participants", Model)
+</div>
+@section Scripts{
+<script>
+ document.getElementById('btnLoad').addEventListener('click', function(){
+    const id = document.getElementById('eventId').value;
+    if(!id) return;
+    fetch('/Registrations/Participants/' + id)
+      .then(r=>r.text())
+      .then(html=>{ document.getElementById('participants').innerHTML = html; });
+ });
+</script>
+}

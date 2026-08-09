@@ -1,0 +1,62 @@
+@model MVC_P.Models.Event
+@{
+    ViewData["Title"] = "Etkinlik Oluþtur";
+    var clubs = (IEnumerable<MVC_P.Models.Club>)ViewBag.Clubs;
+}
+<h2>Etkinlik Oluþtur</h2>
+<form method="post">
+    <div class="mb-3">
+        <label asp-for="ClubId" class="form-label">Kulüp</label>
+        <select asp-for="ClubId" class="form-select">
+            @foreach (var c in clubs)
+            {
+                <option value="@c.Id">@c.Ad</option>
+            }
+        </select>
+        <span asp-validation-for="ClubId" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Baslik" class="form-label"></label>
+        <input asp-for="Baslik" class="form-control" />
+        <span asp-validation-for="Baslik" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Aciklama" class="form-label"></label>
+        <textarea asp-for="Aciklama" class="form-control"></textarea>
+        <span asp-validation-for="Aciklama" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="BaslangicTarihi" class="form-label"></label>
+        <input asp-for="BaslangicTarihi" type="datetime-local" class="form-control" />
+        <span asp-validation-for="BaslangicTarihi" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="BitisTarihi" class="form-label"></label>
+        <input asp-for="BitisTarihi" type="datetime-local" class="form-control" />
+        <span asp-validation-for="BitisTarihi" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Kontenjan" class="form-label"></label>
+        <input asp-for="Kontenjan" type="number" class="form-control" />
+        <span asp-validation-for="Kontenjan" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Konum" class="form-label"></label>
+        <input asp-for="Konum" class="form-control" />
+        <span asp-validation-for="Konum" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Durum" class="form-label"></label>
+        <select asp-for="Durum" class="form-select">
+            <option>Planlandi</option>
+            <option>Tamamlandi</option>
+            <option>Iptal</option>
+        </select>
+        <span asp-validation-for="Durum" class="text-danger"></span>
+    </div>
+    <button class="btn btn-primary" type="submit">Kaydet</button>
+    <a class="btn btn-secondary" asp-action="Index">Geri</a>
+</form>
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+}

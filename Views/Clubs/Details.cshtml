@@ -1,0 +1,8 @@
+@model MVC_P.Models.Club
+@{
+    ViewData["Title"] = "Kulüp Detay";
+}
+<h2>@Model.Ad</h2>
+<p>@Model.Aciklama</p>
+<p><strong>Kuruluþ:</strong> @Model.KurulusTarihi.ToShortDateString() | <strong>Aktif:</strong> @(Model.AktifMi?"Evet":"Hayýr")</p>
+<a class="btn btn-secondary" asp-action="Index">Geri</a>

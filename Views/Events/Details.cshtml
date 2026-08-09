@@ -1,0 +1,28 @@
+@model MVC_P.Models.Event
+@{
+    ViewData["Title"] = "Etkinlik Detayý";
+}
+<h2>@Model.Baslik</h2>
+<p>@Model.Aciklama</p>
+<p><strong>Baþlangýç:</strong> @Model.BaslangicTarihi.ToString("g") | <strong>Bitiþ:</strong> @Model.BitisTarihi.ToString("g")</p>
+<p><strong>Kontenjan:</strong> @Model.Kontenjan | <strong>Kayýtlý:</strong> @ViewBag.RegisteredCount | <strong>Kalan:</strong> @ViewBag.Remaining</p>
+<button id="btnRegister" class="btn btn-primary">Kayýt Ol</button>
+<div id="regMsg" class="mt-2"></div>
+@section Scripts{
+<script>
+ document.getElementById('btnRegister').addEventListener('click', function(){
+   fetch('/Events/Register/@Model.Id', { method: 'POST', headers: { 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value }})
+     .then(r=>r.json())
+     .then(d=>{
+        const el = document.getElementById('regMsg');
+        el.className = d.ok ? 'alert alert-success' : 'alert alert-warning';
+        el.innerText = d.message;
+        if(d.ok){
+           // Baþarýlý kayýt sonrasý sayfayý yenileyelim (kontenjan ve kayýt sayýlarý güncellensin)
+           setTimeout(()=>{ location.reload(); }, 800);
+        }
+     });
+ });
+</script>
+@Html.AntiForgeryToken()
+}

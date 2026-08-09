@@ -1,0 +1,14 @@
+@model MVC_P.Models.Club
+@{
+    ViewData["Title"] = "Kulüp Sil";
+}
+<h2>Kulüp Sil</h2>
+<p>Silmek istediðinize emin misiniz?</p>
+<dl class="row">
+    <dt class="col-sm-2">Ad</dt><dd class="col-sm-10">@Model.Ad</dd>
+</dl>
+<form method="post">
+    <input type="hidden" asp-for="Id" />
+    <button class="btn btn-danger" type="submit">Sil</button>
+    <a class="btn btn-secondary" asp-action="Index">Geri</a>
+</form>

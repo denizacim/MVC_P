@@ -1,0 +1,30 @@
+@using MVC_P.Controllers
+@model List<ProfileEventItem>
+@{
+    ViewData["Title"] = "Profilim";
+}
+<h2>Profilim</h2>
+<p class="small-title">Katýldýðýnýz / Kayýt olduðunuz etkinlikler</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Etkinlik</th>
+            <th>Baþlangýç</th>
+            <th>Onay Durumu</th>
+            <th>Katýlým</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Baslik</td>
+            <td>@item.Baslangic.ToString("g")</td>
+            <td>@item.Durum</td>
+            <td>@(string.IsNullOrEmpty(item.Katilim)?"-":item.Katilim)</td>
+            <td><a class="btn btn-sm btn-outline-primary" asp-controller="Events" asp-action="Details" asp-route-id="@item.EventId">Detay</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

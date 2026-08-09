@@ -1,0 +1,39 @@
+@model List<MVC_P.Models.Club>
+@{
+    ViewData["Title"] = "Kulüpler";
+}
+<h2>Kulüpler</h2>
+@if (ViewBag.Message != null)
+{
+    <div class="alert alert-success">@ViewBag.Message</div>
+}
+<form method="get" class="row g-2 mb-3">
+    <div class="col-auto"><input class="form-control" name="q" placeholder="Ad" value="@Context.Request.Query["q"]" /></div>
+    <div class="col-auto">
+        <select class="form-select" name="aktif">
+            <option value="">Aktif/Pasif</option>
+            <option value="true" selected="@(Context.Request.Query["aktif"]=="true")">Aktif</option>
+            <option value="false" selected="@(Context.Request.Query["aktif"]=="false")">Pasif</option>
+        </select>
+    </div>
+    <div class="col-auto"><button class="btn btn-secondary" type="submit">Filtrele</button></div>
+    <div class="col-auto ms-auto"><a class="btn btn-primary" asp-action="Create">Kulüp Ekle</a></div>
+</form>
+<table class="table table-striped">
+    <thead>
+        <tr><th>Ad</th><th>Aktif</th><th></th></tr>
+    </thead>
+    <tbody>
+    @foreach (var c in Model)
+    {
+        <tr>
+            <td><a asp-action="Details" asp-route-id="@c.Id">@c.Ad</a></td>
+            <td>@(c.AktifMi?"Evet":"Hayýr")</td>
+            <td>
+                <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@c.Id">Düzenle</a>
+                <a class="btn btn-sm btn-outline-danger" asp-action="Delete" asp-route-id="@c.Id">Sil</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

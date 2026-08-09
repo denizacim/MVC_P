@@ -1,0 +1,53 @@
+@model List<MVC_P.Models.EventRegistration>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th><th>Kullanýcý</th><th>Onay</th><th>Katýlým</th><th>Aksiyon</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var r in Model)
+    {
+        <tr data-id="@r.Id">
+            <td>@r.Id</td>
+            <td>@(r.User != null ? ($"{r.User.AdSoyad} ({r.User.Email})") : "-")</td>
+            <td>
+                <select class="form-select onay">
+                    <option value="Beklemede" selected="@(r.OnayDurumu=="Beklemede")">Beklemede</option>
+                    <option value="Onaylý" selected="@(r.OnayDurumu=="Onaylý")">Onaylý</option>
+                    <option value="Reddedildi" selected="@(r.OnayDurumu=="Reddedildi")">Reddedildi</option>
+                </select>
+            </td>
+            <td>
+                <select class="form-select katilim">
+                    <option value="" selected="@(string.IsNullOrEmpty(r.KatilimDurumu))">-</option>
+                    <option value="Geldi" selected="@(r.KatilimDurumu=="Geldi")">Geldi</option>
+                    <option value="Gelmedi" selected="@(r.KatilimDurumu=="Gelmedi")">Gelmedi</option>
+                </select>
+            </td>
+            <td>
+                <button class="btn btn-sm btn-primary btn-save">Kaydet</button>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
+<script>
+ document.querySelectorAll('.btn-save').forEach(btn=>{
+    btn.addEventListener('click', function(){
+        const tr = this.closest('tr');
+        const id = tr.dataset.id;
+        const onay = tr.querySelector('.onay').value;
+        const katilim = tr.querySelector('.katilim').value;
+        Promise.all([
+            fetch('/Registrations/UpdateStatus?id=' + id + '&onay=' + encodeURIComponent(onay), { method: 'POST' }),
+            fetch('/Registrations/MarkAttendance?id=' + id + '&katilim=' + encodeURIComponent(katilim), { method: 'POST' })
+        ]).then(async ([r1, r2])=>{
+            const d1 = await r1.json(); const d2 = await r2.json();
+            const ok = d1.ok && d2.ok;
+            if(ok){ this.classList.remove('btn-primary'); this.classList.add('btn-success'); this.innerText = 'Kaydedildi'; }
+            else { this.classList.add('btn-warning'); this.innerText = 'Hata'; }
+        });
+    });
+ });
+</script>
